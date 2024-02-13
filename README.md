@@ -6,7 +6,7 @@
 bash namecheap-dyndns.sh domain_name ddns_password
 ```
 
-## Or with **data.txt** in the file's directory
+## Or with data.txt in the script's directory
 
 ```
 bash start.sh
