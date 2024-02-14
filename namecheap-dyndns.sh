@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# logs echo to log.txt
 log_message() {
     log_file="log.txt"
     current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
@@ -7,20 +8,23 @@ log_message() {
     echo "[$current_datetime] $1" >> "$log_file"
 }
 
+# checking for arguments
 if [ "$#" -ne 2 ]; then
     echo "usage: $0 arg1 arg2"
     exit 1
 fi
 
+# moving to script's directory
 script_dir=$(dirname "$0")
 cd $script_dir
 log_message "moved to ${script_dir}"
 
+# getting ipv4 address
 ipv4=$(curl -s "http://ipv4.icanhazip.com")
 log_message "ipv4: ${ipv4}"
 
+# logging ipv4 to ipv4.log
 ipv4_log="ipv4.log"
-
 if [ ! -e "${ipv4_log}" ]; then
     touch "${ipv4_log}"
     log_message "${ipv4_log} created"
@@ -32,6 +36,7 @@ else
     log_message "stored: ${stored_ipv4}"
 fi
 
+# calls namecheap https request if ipv4 changed or when the script runs first time
 if [ "${ipv4}" != "${stored_ipv4}" ]; then
     log_message "ipv4 address changed"
     echo "${ipv4}" > $ipv4_log
