@@ -1,14 +1,17 @@
 #!/bin/bash
 
+set -e
+
+log_file="${4}.log"
+
 log_message() {
-    log_file="log.txt"
     current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
     echo "[$current_datetime] $1"
     echo "[$current_datetime] $1" >> "$log_file"
 }
 
-if [ "$#" -ne 2 ]; then
-    echo "usage: $0 arg1 arg2"
+if [ "$#" -ne 4 ]; then
+    echo "usage: $0 domain password host log_file"
     exit 1
 fi
 
@@ -19,7 +22,7 @@ log_message "moved to ${script_dir}"
 ipv4=$(curl -s "http://ipv4.icanhazip.com")
 log_message "ipv4: ${ipv4}"
 
-ipv4_log="${1}.log"
+ipv4_log="${4}.ip"
 
 if [ ! -e "${ipv4_log}" ]; then
     touch "${ipv4_log}"
@@ -36,9 +39,9 @@ if [ "${ipv4}" != "${stored_ipv4}" ]; then
     log_message "ipv4 address changed for ${1}"
     echo "${ipv4}" > $ipv4_log
     log_message "new ipv4 address stored for ${1}"
-    host="@"
     domain_name="${1}"
     ddns_password="${2}"
+    host="${3}"
     your_ip="${ipv4}"
     requesthttps=$"https://dynamicdns.park-your-domain.com/update?host=${host}&domain=${domain_name}&password=${ddns_password}&ip=${ipv4}"
     resquestresult=$(curl "${requesthttps}")
